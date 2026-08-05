@@ -172,7 +172,7 @@ function set_grabbed_params(msg)
     
 end
 
-hook_chat_command("kParams", "grabbed obj params", set_grabbed_params)
+hook_chat_command("ame-params", "grabbed obj params", set_grabbed_params)
 
 view = {
   dvd = false,

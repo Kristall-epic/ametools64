@@ -8,29 +8,21 @@ function toggle_editor()
   if AME.EDITOR == false then
     hud_show()
     camera_unfreeze()
-    set_first_person_enabled(false)
     set_override_fov(0)
-    setwitdh("1")
-    setheighth("1")
-    viewportPos(".5 .5")
   else
     hud_hide()
-    set_override_fov(70)
-    --set_first_person_enabled(true)
+    set_override_fov(90)
     AME.camPos = {
       x = gMarioStates[0].pos.x,
       y = gMarioStates[0].pos.y + 250,
       z = gMarioStates[0].pos.z
     }
-    setwitdh(".55")
-    setheighth(".65")
-    viewportPos(".5 .525")
   end
   
   return true
 end
 
-hook_chat_command("kex", "- toggles editor mode", toggle_editor)
+hook_chat_command("ame", "- toggles editor mode", toggle_editor)
 
 function camVelocity(vel)
   AME.camVel = tonumber(vel) or 50
