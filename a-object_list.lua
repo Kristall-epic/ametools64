@@ -571,6 +571,7 @@ function character_dummy_loop(o)
 end
 id_bhvCharacterDummy = hook_behavior(nil, OBJ_LIST_GENACTOR, true, character_dummy_init, character_dummy_loop)
 
+
 local function mods_load()
   for i = 0, #CS do
     local cur = CS[i]

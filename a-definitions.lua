@@ -122,3 +122,63 @@ for k, v in pairs(_G) do
 end
 
 hook_event(HOOK_ON_MODS_LOADED, gen_tables)
+
+function objectGrabberInit(o)
+  o.oFlags = OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
+  o.oForwardVel = 500
+  o.oFaceAngleYaw = -angleYaw + 0x4000
+  o.oFaceAnglePitch = -anglePitch - 0x4000
+end
+
+function objectGrabberLoop(o)
+  o.oTimer = o.oTimer + 1
+  
+  for i = 0, 10 do
+  generate_yellow_sparkles(o.oPosX, o.oPosY, o.oPosZ, 250)
+  end
+  
+  o.oVelX = coss(o.oFaceAngleYaw)*(sins(o.oFaceAnglePitch)*o.oForwardVel)
+  o.oVelY = coss(o.oFaceAnglePitch)*(o.oForwardVel)
+  o.oVelZ = sins(o.oFaceAngleYaw)*(sins(o.oFaceAnglePitch)*o.oForwardVel)
+  
+  o.oPosX = o.oPosX + o.oVelX
+  o.oPosY = o.oPosY + o.oVelY
+  o.oPosZ = o.oPosZ + o.oVelZ
+  
+  if o.oTimer > 300 then
+    obj_mark_for_deletion(o)
+  end
+ 
+  local object = obj_get_nearest_object(o, 250)
+  if object then
+		i = get_id_from_behavior(object.behavior)
+		
+		object.oFlags = object.oFlags | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
+    
+    if i ~= id_bhvSparkle and i ~= id_bhvSparkleParticleSpawner and i ~= id_bhvSparkleSpawn then
+      obj_mark_for_deletion(o)
+      
+      local model = obj_get_model_id_extended(object)
+      
+      AME.grab.bhv = object.behavior
+      AME.grab.model = model
+      
+      AME.grab.obj = object
+      AME.grab.pos = {
+        x = object.oPosX,
+        y = object.oPosY,
+        z = object.oPosZ
+      }
+      AME.spawning = false
+      
+      if model == E_MODEL_NONE then
+        obj_set_model_extended(AME.grab.obj, E_MODEL_ERROR_MODEL)
+      end
+    end
+    
+  end
+  
+end
+
+id_bhvObjectGrabber = hook_behavior(nil, OBJ_LIST_DEFAULT, true, objectGrabberInit, objectGrabberLoop)
+
