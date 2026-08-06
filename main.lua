@@ -38,6 +38,29 @@ end
 
 hook_chat_command("kt", "- editor cam turning vel", turnVelocity)
 
+
+--tries to find a model of a certain name in any of the currently active mods, if it is found, it is defined globally and added to ametools' list of models
+function find_model(search)
+  local model = smlua_model_util_get_id(search) or 159
+  
+	if model and model ~= 159 then
+	  modelName = "E_MODEL_"..string.upper(string.sub(search, 0, search:len() - 4))
+	
+	  djui_chat_message_create("found "..search.." in a mod! Its ID is "..tostring(model)..' and now you can find it as "'..modelName..'"!')
+		
+		if not models[model] then
+		  models[model] = modelName
+		end
+	else
+		djui_chat_message_create("model not found, ignore script error, it means that smlua_model_util_get_id() did not find that model anywhere")
+	end
+	
+  return true
+end
+
+hook_chat_command("ame-find-model", "- tries to find a model anywhere in your active mods then defines it globally so you can use it", find_model)
+
+
 function keybinds(m, key)
   if (m.playerIndex ~= 0) then return end
   
