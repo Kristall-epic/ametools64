@@ -39,14 +39,14 @@ end
 hook_chat_command("kt", "- editor cam turning vel", turnVelocity)
 
 
---tries to find a model of a certain name in any of the currently active mods, if it is found, it is defined globally and added to ametools' list of models
+--tries to find a model of a certain name in any of the currently active mods, if it is found, it is added to ametools' list of models so you can use it
 function find_model(search)
   local model = smlua_model_util_get_id(search) or 159
   
 	if model and model ~= 159 then
 	  modelName = "E_MODEL_"..string.upper(string.sub(search, 0, search:len() - 4))
 	
-	  djui_chat_message_create("found "..search.." in a mod! Its ID is "..tostring(model)..' and now you can find it as "'..modelName..'"!')
+	  djui_chat_message_create("found "..search.." in a mod! Its ID is "..tostring(model)..' and now you can find it as "'..modelName..'" in the object builder!')
 		
 		if not models[model] then
 		  models[model] = modelName
@@ -58,7 +58,49 @@ function find_model(search)
   return true
 end
 
-hook_chat_command("ame-find-model", "- tries to find a model anywhere in your active mods then defines it globally so you can use it", find_model)
+hook_chat_command("ame-find-model", "- tries to find a model anywhere in your active mods then adds it to ametools' model list so you can use it", find_model)
+
+--defines a custom behavior from the currently held object to ametools' behavior list so you can use it
+function define_bhv_to_amelist(name)
+   if not AME.grab.obj then djui_chat_message_create("Grab an object with custom behavior!!!") return true end   
+	
+	local id = get_id_from_behavior(AME.grab.bhv)
+	
+	if behaviors[id] or search_id_from_behavior_name(name) then
+	  djui_chat_message_create("Behavior already exists")
+		return true
+	end
+	
+	behaviors[id] = name
+	
+	djui_chat_message_create("Defined behavior ID "..id.." as "..name..". You can now use it in the object builder")
+  
+	return true
+end
+
+hook_chat_command("ame-define-bhv", " [name] - if the held object has a custom behavior, adds it to ametools' behavior list so you can use it", define_bhv_to_amelist)
+
+
+--defines a custom model from the currently held object to ametools' model list so you can use it
+function define_model_to_amelist(name)
+   if not AME.grab.obj then djui_chat_message_create("Grab an object with custom model!!!") return true end   
+	
+	local id = AME.grab.model
+	
+	if models[id] or get_id_from_model_name(name) then
+	  djui_chat_message_create("Model already exists "..id)
+		return true
+	end
+	
+	models[id] = name
+	
+	djui_chat_message_create("Defined model ID "..id.." as "..name..". You can now use it in the object builder")
+  
+	return true
+end
+
+hook_chat_command("ame-define-model", " [name] - if the held object has a custom model, adds it to ametools' model list so you can use it", define_model_to_amelist)
+
 
 
 function keybinds(m, key)
