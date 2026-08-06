@@ -254,7 +254,7 @@ function get_id_from_model_name(model)
   
 	for id, str in pairs(models) do
 	
-	  if string.find(str, string.upper(model)) then
+	  if string.find(str, string.upper(model))then
       djui_chat_message_create(str)
     end
 	

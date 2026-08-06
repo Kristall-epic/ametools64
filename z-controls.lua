@@ -52,19 +52,17 @@ local function spawning_controls(m)
         AME.grab.dist = AME.grab.dist - AME.camVel/2
       end
       
-      if (m.controller.buttonDown & L_JPAD ~= 0) then
-        AME.grab.obj.oFaceAngleYaw = AME.grab.obj.oFaceAngleYaw - 0x500
-      elseif (m.controller.buttonDown & R_JPAD ~= 0) then
-        AME.grab.obj.oFaceAngleYaw = AME.grab.obj.oFaceAngleYaw + 0x500
-      end
-      
       if (m.controller.buttonPressed & B_BUTTON ~= 0) then
-        if AME.grab.model == "E_MODEL_NONE" then
-          obj_set_model_extended(AME.grab.obj, E_MODEL_NONE)
-        end
-        
-        AME.grab.obj = nil
-      end
+			  if AME.grab.rotating == true then
+					AME.grab.rotating = false
+			  else
+          if AME.grab.model == "E_MODEL_NONE" then
+            obj_set_model_extended(AME.grab.obj, E_MODEL_NONE)
+          end
+				  
+            AME.grab.obj = nil
+			  end
+			end	
       
     end
     
@@ -82,29 +80,47 @@ local function spawning_controls(m)
       anglePitch = anglePitch + 0x10*AME.turnVel
     end
 
+    if AME.grab.rotating == false then
 
-    if (m.controller.buttonDown & A_BUTTON) ~= 0 then
-        AME.camPos.x = AME.camPos.x + coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-        AME.camPos.y = AME.camPos.y + coss(anglePitch)*(AME.camVel)
-        AME.camPos.z = AME.camPos.z + sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-        
-    elseif (m.controller.buttonDown & Z_TRIG) ~= 0 then
-        AME.camPos.x = AME.camPos.x - coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-        AME.camPos.y = AME.camPos.y - coss(anglePitch)*(AME.camVel)
-        AME.camPos.z = AME.camPos.z - sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-    end
+      if (m.controller.buttonDown & A_BUTTON) ~= 0 then
+          AME.camPos.x = AME.camPos.x + coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+          AME.camPos.y = AME.camPos.y + coss(anglePitch)*(AME.camVel)
+          AME.camPos.z = AME.camPos.z + sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+          
+      elseif (m.controller.buttonDown & Z_TRIG) ~= 0 then
+          AME.camPos.x = AME.camPos.x - coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+          AME.camPos.y = AME.camPos.y - coss(anglePitch)*(AME.camVel)
+          AME.camPos.z = AME.camPos.z - sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+      end
     
-    R_OR_ONE = FLYCAM == true and coss(anglePitch) or 1
-
-        AME.camPos.x = AME.camPos.x + sins(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*R_OR_ONE)
-        AME.camPos.z = AME.camPos.z + coss(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*R_OR_ONE)
-        
-        if FLYCAM == true then
-          AME.camPos.y = AME.camPos.y + sins(anglePitch)*coss(stickYaw)*(AME.camVel*(m.controller.stickMag/64))
-          AME.camPos.x = AME.camPos.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
-          AME.camPos.z = AME.camPos.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
-        end
-        
+		  --Horizontal movement
+      AME.camPos.x = AME.camPos.x + sins(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+      AME.camPos.z = AME.camPos.z + coss(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+      
+		  --Vertical movement, can move horizontally based on pitch cuz it is like godot camera
+      AME.camPos.y = AME.camPos.y + sins(anglePitch)*coss(stickYaw)*(AME.camVel*(m.controller.stickMag/64))
+      AME.camPos.x = AME.camPos.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+      AME.camPos.z = AME.camPos.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+		else
+		
+		  if m.controller.buttonDown & A_BUTTON ~= 0 then
+			  AME.grab.obj.oFaceAngleRoll = AME.grab.obj.oFaceAngleRoll + (AME.camVel*20)
+			end
+			
+			if m.controller.buttonDown & Z_TRIG ~= 0 then
+			  AME.grab.obj.oFaceAngleRoll = AME.grab.obj.oFaceAngleRoll - (AME.camVel*20)
+			end
+			
+			if m.controller.buttonPressed & R_TRIG ~= 0 then
+			  AME.grab.obj.oFaceAngleYaw = 0
+			  AME.grab.obj.oFaceAnglePitch = 0
+			  AME.grab.obj.oFaceAngleRoll = 0
+			end
+		  
+			AME.grab.obj.oFaceAngleYaw = AME.grab.obj.oFaceAngleYaw + (m.controller.rawStickX/127)*(AME.camVel*20)
+		  AME.grab.obj.oFaceAnglePitch = AME.grab.obj.oFaceAnglePitch - (m.controller.rawStickY/127)*(AME.camVel*20)
+		
+    end
         if (AME.spawning == true) then
           
 					if m.controller.buttonPressed & R_TRIG ~= 0 then
@@ -136,12 +152,21 @@ local function spawning_controls(m)
             if (m.controller.buttonPressed & D_JPAD ~= 0) then
               spawner.id = spawner.id + 3
             end
-            
-            if (m.controller.buttonPressed & B_BUTTON ~= 0) then
-              m.faceAngle.y = pointer.look.yaw + 0x8000
-            end
 						
 					end
+					
+					if (m.controller.buttonPressed & B_BUTTON ~= 0 and AME.grab.rotating == false) then
+            m.faceAngle.y = pointer.look.yaw + 0x8000
+						local objX = AME.camPos.x - coss(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
+            local objY = AME.camPos.y - 500*sins(anglePitch)
+            local objZ = AME.camPos.z - sins(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
+            
+						if AME.spawnMode == SPAWN_MODE_COMBO then
+              spawn_sync_object(BMOD_OBJ_LIST[spawner.id].behavior, BMOD_OBJ_LIST[spawner.id].model, objX, objY, objZ, function(o) o.oUnk94 = BMOD_OBJ_LIST[spawner.id].model end)
+						else
+							spawn_sync_object(AME.builtObj.bhv, AME.builtObj.model, objX, objY, objZ, function(o) o.oUnk94 = AME.builtObj.model end)
+						end
+          end
           
         end
 

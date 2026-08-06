@@ -50,6 +50,7 @@ AME = {
     model = 0,
 		rawModel = nil,
     dist = 500,
+		rotating = false,
     goalPos = {
       x = 0,
       y = 0,

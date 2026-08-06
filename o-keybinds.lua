@@ -99,7 +99,7 @@ end
 
 hook_keybind("M", toggle_mario)
 
---saves all objects in the current level to mod storage in a format that can be pasted into a script.c [Shift + s]
+--saves all objects in the current level to modFS in a format that can be pasted into a script.c [Shift + s]
 function save_level_objs(m)
   local lvl =
     level_is_vanilla_level(gNetworkPlayers[0].currLevelNum) == 0
@@ -143,3 +143,20 @@ function save_level_objs(m)
 end
 
 hook_keybind("S", save_level_objs)
+
+
+--[[
+toggles rotating the currently held object 
+Joystick: horizontal changes yaw, vertical changes pitch
+A & Z change the roll
+R resets all rotations of the object to 0
+]]
+
+function toggle_rotate_mode(m)
+  if not AME.grab.obj then return end
+	
+	AME.grab.rotating = not AME.grab.rotating
+	
+end
+
+hook_keybind("r", toggle_rotate_mode)

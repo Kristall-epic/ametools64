@@ -55,7 +55,7 @@ function keybinds(m, key)
   end
 	
 	if AME.spawning == true and AME.spawnMode == SPAWN_MODE_BUILD then
-	  if string.find(key, "E_MODEL_") then
+	  if string.find(key, "E_MODEL") then
 			obj_build_set_model(key)
 	  end
 	  

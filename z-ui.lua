@@ -65,20 +65,6 @@ function render()
       
     if (AME.spawning == true) then
       
-    if m.controller.buttonPressed & B_BUTTON ~= 0 then
-      
-      local objX = AME.camPos.x - coss(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
-      local objY = AME.camPos.y - 500*sins(anglePitch)
-      local objZ = AME.camPos.z - sins(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
-      
-			if AME.spawnMode == SPAWN_MODE_COMBO then
-        spawn_sync_object(BMOD_OBJ_LIST[spawner.id].behavior, BMOD_OBJ_LIST[spawner.id].model, objX, objY, objZ, function(o) o.oUnk94 = BMOD_OBJ_LIST[spawner.id].model end)
-			else
-			  spawn_sync_object(AME.builtObj.bhv, AME.builtObj.model, objX, objY, objZ, function(o) o.oUnk94 = AME.builtObj.model end)
-			end	
-      
-    end
-      
     djui_hud_set_color(0x91, 0x6c, 0xca, 255)
       djui_hud_render_rect(6 + squareW*offsetCol + AME.ui.critterbox.pos.x, squareW*3 - 2, squareW, squareW)
       djui_hud_reset_color()
