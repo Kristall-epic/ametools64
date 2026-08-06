@@ -133,9 +133,7 @@ end
 function objectGrabberLoop(o)
   o.oTimer = o.oTimer + 1
   
-  for i = 0, 10 do
   generate_yellow_sparkles(o.oPosX, o.oPosY, o.oPosZ, 250)
-  end
   
   o.oVelX = coss(o.oFaceAngleYaw)*(sins(o.oFaceAnglePitch)*o.oForwardVel)
   o.oVelY = coss(o.oFaceAnglePitch)*(o.oForwardVel)

@@ -1,57 +1,62 @@
 
-function render_3d_gizmo(l) 
+function render_3d_gizmo(l, x, y, scale) 
+    if not scale then scale = 1 end
+		
+		--ok uhh, if it is slightly to the left then it has to account for that panning or it looks flat
+		local angleOffsetY = 0x4000*((x-djui_hud_get_screen_width()/2)/djui_hud_get_screen_height()/2)
+		local angleOffsetP = 0x4000*((y-djui_hud_get_screen_height()/2)/djui_hud_get_screen_height()/2)
+		
+    pointer.pos.x = x
+    pointer.pos.y = y
     
-    pointer.pos.x = djui_hud_get_screen_width()*.5
-    pointer.pos.y = djui_hud_get_screen_height()*.525
     
-    
-    local final_z_yaw = pointer.pos.x + (sins(pointer.look.yaw)*pointer.maxVal)*SCALE
-      local final_z_pitch = pointer.pos.y + ((sins(pointer.look.pitch)*pointer.maxVal) * (coss(pointer.look.yaw)))*SCALE
+    local final_z_yaw = pointer.pos.x + (sins(pointer.look.yaw + angleOffsetY* coss(math.abs(pointer.look.pitch)) )*pointer.maxVal)*scale
+      local final_z_pitch = pointer.pos.y + ((sins(pointer.look.pitch + angleOffsetP)*pointer.maxVal) * (coss(pointer.look.yaw + angleOffsetY)))*scale
       
-      local final_x_yaw = pointer.pos.x + (coss(pointer.look.yaw + 0x8000)*pointer.maxVal)*SCALE
-      local final_x_pitch = pointer.pos.y + ((sins(pointer.look.pitch)*pointer.maxVal) * (sins(pointer.look.yaw)))*SCALE
+      local final_x_yaw = pointer.pos.x + (coss(pointer.look.yaw + 0x8000 + angleOffsetY * coss(math.abs(pointer.look.pitch)) )*pointer.maxVal)*scale
+      local final_x_pitch = pointer.pos.y + ((sins(pointer.look.pitch + angleOffsetP)*pointer.maxVal) * (sins(pointer.look.yaw + angleOffsetY)))*scale
       
-      local final_y_pitch = pointer.pos.y + (coss(pointer.look.pitch)*pointer.maxVal)*SCALE
+      local final_y_pitch = pointer.pos.y + (coss(pointer.look.pitch + angleOffsetP)*pointer.maxVal)*scale
       
       --render shadows
-      djui_hud_set_color(64, 64, 64, 127)
+      djui_hud_set_color(0, 0, 0, 127)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y - 0.75, final_z_yaw, final_z_pitch - 0.75, 3*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y - 0.75, final_z_yaw, final_z_pitch - 0.75, 3*scale)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y - 0.75, final_x_yaw, final_x_pitch - 0.75, 3*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y - 0.75, final_x_yaw, final_x_pitch - 0.75, 3*scale)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch - 1.5, 3*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch - 1.5, 3*scale)
       
-      djui_hud_set_color(0, 255, 0, 192)
+      djui_hud_set_color(87, 232, 87, 255)
       
       --if looking up then Y line should be beneath X and Z line, render first
       if pointer.look.pitch <= 32768 then
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch, 1.5*scale)
       end
       
       --if looking between the angle where Z should overlap X, make Z render on top
       if pointer.look.yaw > 0x4000 and pointer.look.yaw < 0x8000 then
-      djui_hud_set_color(255, 0, 0, 192)
+      djui_hud_set_color(232, 87, 87, 255)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_x_yaw, final_x_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_x_yaw, final_x_pitch, 1.5*scale)
       
-      djui_hud_set_color(0, 0, 255, 192)
+      djui_hud_set_color(87, 87, 232, 255)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_z_yaw, final_z_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_z_yaw, final_z_pitch, 1.5*scale)
       else
-      djui_hud_set_color(0, 0, 255, 192)
+      djui_hud_set_color(87, 87, 232, 255)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_z_yaw, final_z_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_z_yaw, final_z_pitch, 1.5*scale)
       
-      djui_hud_set_color(255, 0, 0, 192)
+      djui_hud_set_color(232, 87, 87, 255)
       
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_x_yaw, final_x_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, final_x_yaw, final_x_pitch, 1.5*scale)
       end
       
-      djui_hud_set_color(0, 255, 0, 192)
+      djui_hud_set_color(87, 232, 87, 255)
       --if looking down Y line should be on top, render last
       if pointer.look.pitch > 32768 then
-      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch, 1.5*SCALE)
+      djui_hud_render_line(pointer.pos.x, pointer.pos.y, pointer.pos.x, final_y_pitch, 1.5*scale)
       end
     
       djui_hud_set_color(255, 255, 255, 255)

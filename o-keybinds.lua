@@ -26,7 +26,7 @@ hook_keybind("n", toggle_gizmo)
 --launches a magic beam from your camera position and angle that grabs the first object it touches [g]
 function grab_object(m)
   
-  spawn_non_sync_object(id_bhvObjectGrabber, E_MODEL_NONE, AME.camPos.x, AME.camPos.y, AME.camPos.z, nil)
+  spawn_non_sync_object(id_bhvObjectGrabber, E_MODEL_WATER_MINE, AME.camPos.x, AME.camPos.y, AME.camPos.z, nil)
 end
 
 hook_keybind("g", grab_object)
