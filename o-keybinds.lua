@@ -87,12 +87,7 @@ function toggle_mario(m)
 	
 	if AME.mario == true then
 	  set_mario_action(m, ACT_FREEFALL, 0)
-		
-		if m.health < 0x100 then
-			m.hurtCounter = 0
-		  m.health = 0x880
-		end
-		
+		m.health = 0x880
 	end
 	
 end
@@ -136,7 +131,7 @@ function save_level_objs(m)
 		end
 		local success = modFs:save()
 		if (success == true) then
-		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..get_active_mod().name..".modfs/"..file.filepath, 4)
+		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..modFs.modpath..".modfs/"..file.filepath, 4)
 		else	
 			djui_popup_create("AME: Error exporting objects from level.", 1)
 		end
@@ -146,6 +141,7 @@ hook_keybind("S", save_level_objs)
 
 
 --[[
+[r]
 toggles rotating the currently held object 
 Joystick: horizontal changes yaw, vertical changes pitch
 A & Z change the roll

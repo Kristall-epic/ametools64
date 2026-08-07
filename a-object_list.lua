@@ -1,6 +1,6 @@
 BMOD_OBJ_LIST = {
     --{name = "", category = "", behavior = Id_bhv, model = E_MODEL_},
-    {name = "CUSTOM", behavior = id_bhvGoomba, model = E_MODEL_PEACH},
+    --{name = "CUSTOM", behavior = id_bhvGoomba, model = E_MODEL_PEACH},
     {name = "1UP", behavior = id_bhv1Up, model = E_MODEL_1UP},
     {name = "1UP_JUMP_ON_APPROACH", behavior = id_bhv1upJumpOnApproach, model = E_MODEL_1UP},
     {name = "1UP_SLIDING", behavior = id_bhv1upSliding, model = E_MODEL_1UP},
@@ -523,22 +523,8 @@ BMOD_OBJ_LIST = {
     {name = "POINT_LIGHT", model = E_MODEL_NONE, behavior = id_bhvPointLight},
 }
 
-local function bhv_bmodMoveObject_init(o)
-    o.oFlags = OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
-end
 
-local function bhv_bmodMoveObject_loop(o)
-    o.oPosX = OBJECT_POS.x
-    o.oPosY = OBJECT_POS.y
-    o.oPosZ = OBJECT_POS.z
-    o.oFaceAnglePitch = OBJECT_FACEANGLE.x
-    o.oFaceAngleYaw = OBJECT_FACEANGLE.y
-    o.oFaceAngleRoll = OBJECT_FACEANGLE.z
-end
-
-id_bhvbmodMoveObject = hook_behavior(nil, OBJ_LIST_DEFAULT, true, bhv_bmodMoveObject_init, bhv_bmodMoveObject_loop, "bhv_bmodMoveObject")
-
-function add_object_to_list(name, behavior, model)
+function create_object_combo(name, behavior, model)
     name = string.upper(name)
     for i, v in pairs(BMOD_OBJ_LIST) do
         if v.name == name then
@@ -549,7 +535,7 @@ function add_object_to_list(name, behavior, model)
 end
 
 _G.AmeTools64 = {
-  add_object_to_list = add_object_to_list
+  create_object_combo = create_object_combo
 }
 
 if not charSelect then return end
@@ -578,7 +564,7 @@ local function mods_load()
     local model = cur[1].model or E_MODEL_MARIO
     local name = "CS_"..cur.nickname:upper():gsub(" ", "_")
     
-    add_object_to_list(name, id_bhvCharacterDummy, model)
+    create_object_combo(name, id_bhvCharacterDummy, model)
   end
 	
 end

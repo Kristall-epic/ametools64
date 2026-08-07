@@ -1,6 +1,5 @@
 -- name: ~ AmeTools64 ~
 -- descriptions: Ametools64 is a powerful level editor similar to TT64 and Quad64 that lets you add, move around, change certain properties, and delete objects in a level, it can even export all objects in the level to ModFS in a format you can paste into a script.c file\nthere's also API functions that let you add custom objects for you and others to mess around with!
-define_custom_obj_fields({oLoremIpsum = 'u32', oTrueModelIndex = 'u32'})
 
 function toggle_editor()
   AME.EDITOR = not AME.EDITOR
