@@ -131,7 +131,7 @@ function save_level_objs(m)
 		end
 		local success = modFs:save()
 		if (success == true) then
-		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..modFs.modpath..".modfs/"..file.filepath, 4)
+		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..modFs.modPath..".modfs/"..file.filepath, 4)
 		else	
 			djui_popup_create("AME: Error exporting objects from level.", 1)
 		end
