@@ -16,8 +16,8 @@ AME = {
   spawning = false,
 	spawnMode = SPAWN_MODE_COMBO,
 	builtObj = {
-	  bhv = 0,
-		model = 0
+	  bhv = id_bhvStaticObject,
+		model = E_MODEL_GOOMBA
 	},
 	EDITOR = false,
   xray = false,
@@ -180,4 +180,3 @@ function objectGrabberLoop(o)
 end
 
 id_bhvObjectGrabber = hook_behavior(nil, OBJ_LIST_DEFAULT, true, objectGrabberInit, objectGrabberLoop)
-

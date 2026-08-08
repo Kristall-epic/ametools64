@@ -42,6 +42,7 @@ function delete_grabbed(m)
   
   obj_mark_for_deletion(AME.grab.obj)
   
+	AME.grab.rotating = false
   AME.grab.obj = nil
 end
 

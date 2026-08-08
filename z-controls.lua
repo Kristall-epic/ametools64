@@ -13,7 +13,7 @@ local function spawning_controls(m)
     m.freeze = true
 		
     camera_freeze()
-    --set_first_person_enabled(true)
+    set_first_person_enabled(false)
     OBJECT_DISTANCE = coss(anglePitch)*DISTANCE
     stickYaw = m.intendedYaw - gLakituState.yaw
     
@@ -102,6 +102,9 @@ local function spawning_controls(m)
       AME.camPos.x = AME.camPos.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
       AME.camPos.z = AME.camPos.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
 		else
+		  if not AME.grab.obj then
+			  AME.grab.rotating = false
+			end
 		
 		  if m.controller.buttonDown & A_BUTTON ~= 0 then
 			  AME.grab.obj.oFaceAngleRoll = AME.grab.obj.oFaceAngleRoll + (AME.camVel*20)
