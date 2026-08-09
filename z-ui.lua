@@ -26,9 +26,9 @@ function render()
     render_3d_gizmo(gLakituState, djui_hud_get_screen_width()/2 + 4, djui_hud_get_screen_height()/2 - 4, .65)
 		djui_hud_set_color(0, 0, 0, 255)
 		djui_hud_render_rect(djui_hud_get_screen_width()/2 - 1, djui_hud_get_screen_height()/2 - 1, 2, 2)
-		djui_hud_reset_color()
+		djui_hud_set_color(255, 255, 255, 255)
 		djui_hud_render_rect(djui_hud_get_screen_width()/2 - .5, djui_hud_get_screen_height()/2 - .5, 1, 1)
-		
+		djui_hud_reset_color()
   end
   
   if (AME.grab.obj) then

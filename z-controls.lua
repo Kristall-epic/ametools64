@@ -120,8 +120,8 @@ local function spawning_controls(m)
 			  AME.grab.obj.oFaceAngleRoll = 0
 			end
 		  
-			AME.grab.obj.oFaceAngleYaw = AME.grab.obj.oFaceAngleYaw + (m.controller.rawStickX/127)*(AME.camVel*20)
-		  AME.grab.obj.oFaceAnglePitch = AME.grab.obj.oFaceAnglePitch - (m.controller.rawStickY/127)*(AME.camVel*20)
+			AME.grab.obj.oFaceAngleYaw = AME.grab.obj.oFaceAngleYaw + ((m.controller.rawStickX/127)*(AME.camVel*20))*AME.grab.rotY
+		  AME.grab.obj.oFaceAnglePitch = AME.grab.obj.oFaceAnglePitch - ((m.controller.rawStickY/127)*(AME.camVel*20))*AME.grab.rotP
 		
     end
         if (AME.spawning == true) then

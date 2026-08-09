@@ -157,3 +157,46 @@ function toggle_rotate_mode(m)
 end
 
 hook_keybind("r", toggle_rotate_mode)
+
+
+-- snaps the currently held object to the floor if there's floor [f]
+function snap_to_floor(m)
+  if not AME.grab.obj then return end
+	
+	local o = AME.grab.obj
+	
+	local vertDiff = gLakituState.pos.y - o.oPosY
+	
+	local floor = collision_find_surface_on_ray(o.oPosX, o.oPosY, o.oPosZ, 0, -64000, 0)
+	
+	if floor.surface then
+	  AME.camPos.y = floor.hitPos.y + vertDiff
+	else
+	  djui_popup_create("No floor found!!!!!!", 1)
+	end
+
+end
+
+hook_keybind("f", snap_to_floor)
+
+--while rotating, makes you only change yaw [y]
+function only_rotate_yaw(m)
+  if not AME.grab.obj or AME.grab.rotating == false then return end
+
+  AME.grab.rotY = 1
+	AME.grab.rotP = 1 - AME.grab.rotP
+
+end
+
+hook_keybind("y", only_rotate_yaw)
+
+--while rotating, makes you only change pitch [y]
+function only_rotate_pitch(m)
+  if not AME.grab.obj or AME.grab.rotating == false then return end
+
+  AME.grab.rotP = 1
+	AME.grab.rotY = 1 - AME.grab.rotY
+
+end
+
+hook_keybind("p", only_rotate_pitch)
