@@ -28,14 +28,23 @@ function camVelocity(vel)
   return true
 end
 
-hook_chat_command("kv", "- editor cam vel", camVelocity)
+hook_chat_command("ame-cam-vel", "- editor cam vel", camVelocity)
 
 function turnVelocity(vel)
   AME.turnVel = tonumber(vel) or 50
   return true
 end
 
-hook_chat_command("kt", "- editor cam turning vel", turnVelocity)
+hook_chat_command("ame-cam-turn", "- editor cam turning vel", turnVelocity)
+
+function lerpStrength(power)
+  power = tonumber(power) or .3
+	
+  AME.lerpStr = math.clamp(power, 0, 1)
+  return true
+end
+
+hook_chat_command("ame-held-lerp", "[0-1] - how quickly the held object will move towards its intended position", lerpStrength)
 
 
 --tries to find a model of a certain name in any of the currently active mods, if it is found, it is added to ametools' list of models so you can use it

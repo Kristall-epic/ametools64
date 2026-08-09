@@ -28,9 +28,9 @@ local function spawning_controls(m)
     }
     
     if (AME.grab.obj) then
-      AME.grab.pos.x = math.lerp(AME.grab.pos.x, AME.grab.goalPos.x, 0.3)
-      AME.grab.pos.y = math.lerp(AME.grab.pos.y, AME.grab.goalPos.y, 0.3)
-      AME.grab.pos.z = math.lerp(AME.grab.pos.z, AME.grab.goalPos.z, 0.3)
+      AME.grab.pos.x = math.lerp(AME.grab.pos.x, AME.grab.goalPos.x, AME.lerpStr)
+      AME.grab.pos.y = math.lerp(AME.grab.pos.y, AME.grab.goalPos.y, AME.lerpStr)
+      AME.grab.pos.z = math.lerp(AME.grab.pos.z, AME.grab.goalPos.z, AME.lerpStr)
       
       if (AME.grab.obj == m.marioObj) then
         m.pos.x = AME.grab.pos.x

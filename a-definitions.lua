@@ -25,6 +25,7 @@ AME = {
   camPos = {x = 0, y = 0, z = 0},
   camVel = 50,
   turnVel = 50,
+	lerpStr = .3,
   info = {
     gizmo = {
       visible = true,
