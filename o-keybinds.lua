@@ -170,7 +170,11 @@ function snap_to_floor(m)
 	local floor = collision_find_surface_on_ray(o.oPosX, o.oPosY, o.oPosZ, 0, -64000, 0)
 	
 	if floor.surface then
-	  AME.camPos.y = floor.hitPos.y + vertDiff
+	  if AME.orbitCam == false then
+			AME.camPos.y = floor.hitPos.y + vertDiff
+		else
+		  AME.camFoc.y = floor.hitPos.y
+		end
 	else
 	  djui_popup_create("No floor found!!!!!!", 1)
 	end
@@ -200,3 +204,10 @@ function only_rotate_pitch(m)
 end
 
 hook_keybind("p", only_rotate_pitch)
+
+
+function toggle_orbit_cam(m)
+  AME.orbitCam = not AME.orbitCam
+end
+
+hook_keybind("c", toggle_orbit_cam)

@@ -68,6 +68,21 @@ end
 
 hook_chat_command("ame-find-model", "- tries to find a model anywhere in your active mods then adds it to ametools' model list so you can use it", find_model)
 
+
+function find_behavior(name)
+
+  for i = 16000, 32768 do
+	  bhvName = get_behavior_name_from_id(i)
+	
+	  if bhvName and bhvName:find(name) then
+		  djui_chat_message_create("found "..bhvName.." it is id "..i)
+		end
+	end
+
+end
+
+hook_chat_command("ame-find-behavior", "- tries to find a behavior anywhere in your active mods then adds it to ametools' model list so you can use it", find_behavior)
+
 --defines a custom behavior from the currently held object to ametools' behavior list so you can use it
 function define_bhv_to_amelist(name)
    if not AME.grab.obj then djui_chat_message_create("Grab an object with custom behavior!!!") return true end   
@@ -109,7 +124,22 @@ end
 
 hook_chat_command("ame-define-model", " [name] - if the held object has a custom model, adds it to ametools' model list so you can use it", define_model_to_amelist)
 
+function ame_set_scale(msg)
+  if not AME.grab.obj then return true end
 
+  local args = {}
+    for argument in msg:gmatch("%S+") do table.insert(args, argument) end
+		
+	local x = tonumber(args[1]) or 1
+  local y = tonumber(args[2]) or 1
+	local z = tonumber(args[3]) or 1
+
+
+  obj_set_gfx_scale(AME.grab.obj, x, y, z)
+
+end
+
+hook_chat_command("ame-obj-scale", "g", ame_set_scale)
 
 function keybinds(m, key)
   if (m.playerIndex ~= 0) then return end

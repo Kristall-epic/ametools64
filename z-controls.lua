@@ -1,7 +1,6 @@
 
 AME.camPos = {x = 0, y = 0, z = 0}
 AME.camVel = 50
-DISTANCE = 50
 
 FLYCAM = true
 angleYaw = 0x0
@@ -12,21 +11,34 @@ local function spawning_controls(m)
     m.peakHeight = m.pos.y
     m.freeze = true
 		
+		DISTANCE = AME.grab.dist
+		local grabDist = AME.grab.dist
+		
     camera_freeze()
     set_first_person_enabled(false)
     OBJECT_DISTANCE = coss(anglePitch)*DISTANCE
     stickYaw = m.intendedYaw - gLakituState.yaw
-    
-    vec3f_set(l.focus, AME.camPos.x - sins(angleYaw)*OBJECT_DISTANCE, AME.camPos.y - sins(anglePitch)*DISTANCE, AME.camPos.z - coss(angleYaw)*OBJECT_DISTANCE)
+		
+		if AME.orbitCam == false then
+		  AME.camFoc = {
+				x = AME.camPos.x - sins(angleYaw)*OBJECT_DISTANCE,
+			  y = AME.camPos.y - sins(anglePitch)*DISTANCE,
+			  z = AME.camPos.z - coss(angleYaw)*OBJECT_DISTANCE
+		  }
+		else
+		  AME.camPos = {
+			  x = AME.camFoc.x - sins(angleYaw + 0x8000)*OBJECT_DISTANCE,
+				y = AME.camFoc.y - sins(anglePitch + 0x8000)*DISTANCE,
+				z = AME.camFoc.z - coss(angleYaw + 0x8000)*OBJECT_DISTANCE,
+			}
+		end
+		
+		vec3f_copy(l.focus, AME.camFoc)
     vec3f_copy(l.pos, AME.camPos)
-    local grabDist = AME.grab.dist
+		
+		AME.grab.goalPos = AME.camFoc
     
-    AME.grab.goalPos = {
-      x = AME.camPos.x - sins(angleYaw)*(coss(anglePitch)*grabDist),
-      y = AME.camPos.y - sins(anglePitch)*grabDist,
-      z = AME.camPos.z - coss(angleYaw)*(coss(anglePitch)*grabDist)
-    }
-    
+		
     if (AME.grab.obj) then
       AME.grab.pos.x = math.lerp(AME.grab.pos.x, AME.grab.goalPos.x, AME.lerpStr)
       AME.grab.pos.y = math.lerp(AME.grab.pos.y, AME.grab.goalPos.y, AME.lerpStr)
@@ -81,26 +93,51 @@ local function spawning_controls(m)
     end
 
     if AME.grab.rotating == false then
-
-      if (m.controller.buttonDown & A_BUTTON) ~= 0 then
+    
+		  if AME.orbitCam == false then
+				--Horizontal movement
+        AME.camPos.x = AME.camPos.x + sins(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+        AME.camPos.z = AME.camPos.z + coss(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+				
+				--Vertical movement, can move horizontally based on pitch cuz it is like godot camera
+        AME.camPos.y = AME.camPos.y + sins(anglePitch)*coss(stickYaw)*(AME.camVel*(m.controller.stickMag/64))
+        AME.camPos.x = AME.camPos.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+        AME.camPos.z = AME.camPos.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+				
+				--vertical A/Z movement
+				if (m.controller.buttonDown & A_BUTTON) ~= 0 then
           AME.camPos.x = AME.camPos.x + coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
           AME.camPos.y = AME.camPos.y + coss(anglePitch)*(AME.camVel)
           AME.camPos.z = AME.camPos.z + sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-          
-      elseif (m.controller.buttonDown & Z_TRIG) ~= 0 then
+        elseif (m.controller.buttonDown & Z_TRIG) ~= 0 then
           AME.camPos.x = AME.camPos.x - coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
           AME.camPos.y = AME.camPos.y - coss(anglePitch)*(AME.camVel)
           AME.camPos.z = AME.camPos.z - sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
-      end
-    
-		  --Horizontal movement
-      AME.camPos.x = AME.camPos.x + sins(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
-      AME.camPos.z = AME.camPos.z + coss(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
-      
-		  --Vertical movement, can move horizontally based on pitch cuz it is like godot camera
-      AME.camPos.y = AME.camPos.y + sins(anglePitch)*coss(stickYaw)*(AME.camVel*(m.controller.stickMag/64))
-      AME.camPos.x = AME.camPos.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
-      AME.camPos.z = AME.camPos.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+        end
+				
+			else
+			  --Horizontal movement
+        AME.camFoc.x = AME.camFoc.x + sins(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+        AME.camFoc.z = AME.camFoc.z + coss(stickYaw + angleYaw)*((AME.camVel*(m.controller.stickMag/64))*coss(anglePitch))
+        
+				--Vertical movement, can move horizontally based on pitch cuz it is like godot camera
+        AME.camFoc.y = AME.camFoc.y + sins(anglePitch)*coss(stickYaw)*(AME.camVel*(m.controller.stickMag/64))
+        AME.camFoc.x = AME.camFoc.x + sins(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+        AME.camFoc.z = AME.camFoc.z + coss(angleYaw + 0x4000)*(AME.camVel*(m.controller.rawStickX/127)*sins(anglePitch)) * (anglePitch < 0 and -1 or 1)
+				
+				--vertical A/Z movement
+				if (m.controller.buttonDown & A_BUTTON) ~= 0 then
+            AME.camFoc.x = AME.camFoc.x + coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+            AME.camFoc.y = AME.camFoc.y + coss(anglePitch)*(AME.camVel)
+            AME.camFoc.z = AME.camFoc.z + sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+        elseif (m.controller.buttonDown & Z_TRIG) ~= 0 then
+            AME.camFoc.x = AME.camFoc.x - coss(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+            AME.camFoc.y = AME.camFoc.y - coss(anglePitch)*(AME.camVel)
+            AME.camFoc.z = AME.camFoc.z - sins(-angleYaw - 0x4000)*(sins(anglePitch)*AME.camVel)
+        end
+				
+			end
+			
 		else
 		  if not AME.grab.obj then
 			  AME.grab.rotating = false

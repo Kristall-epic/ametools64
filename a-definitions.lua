@@ -15,6 +15,7 @@ SPAWN_MODE_BUILD = 1
 AME = {
   spawning = false,
 	spawnMode = SPAWN_MODE_COMBO,
+	orbitCam = false,
 	builtObj = {
 	  bhv = id_bhvStaticObject,
 		model = E_MODEL_GOOMBA
@@ -23,6 +24,7 @@ AME = {
   xray = false,
 	mario = true,
   camPos = {x = 0, y = 0, z = 0},
+	camFoc = {x = 0, y = 0, z = 0},
   camVel = 50,
   turnVel = 50,
 	lerpStr = .3,
