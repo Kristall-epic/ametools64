@@ -124,6 +124,100 @@ end
 
 hook_chat_command("ame-define-model", " [name] - if the held object has a custom model, adds it to ametools' model list so you can use it", define_model_to_amelist)
 
+
+function save_level_objs(key)
+  local lvl =
+    level_is_vanilla_level(gNetworkPlayers[0].currLevelNum) == 0
+    and smlua_level_util_get_info(gNetworkPlayers[0].currLevelNum).fullname
+    or get_level_name(
+      gNetworkPlayers[0].currCourseNum,
+      gNetworkPlayers[0].currLevelNum,
+      gNetworkPlayers[0].currAreaIndex
+    )
+	local lvl_file = string.lower(lvl:gsub(" ", "_"))	
+  
+  local fallback = "level_"..lvl_file.."_area_"..gNetworkPlayers[0].currAreaIndex..".txt"
+
+  local filename = #key > 0 and string.lower(key:gsub(" ", "_"))..".txt" or fallback
+
+  local file = modFs:get_file(filename) or modFs:create_file(filename, true)
+  file:set_text_mode(true) -- Set mode to text
+  file:rewind() -- Reset offset to the beginning of the file
+
+	local count = 0
+	local lines = {}
+	for i = 0, NUM_OBJ_LISTS - 1 do
+        local o = obj_get_first(i)
+        repeat
+				  count = count + 1
+						if (o and not excludedExports[get_id_from_behavior(o.behavior)]) then
+              local new = create_object_c_func(o)
+              table.insert(lines, new)
+						end
+            o = obj_get_next(o)
+        until o == nil
+    end
+		file:erase(file.size)
+		for i, obj in pairs(lines) do
+		  file:write_line(obj)
+		end
+		local success = modFs:save()
+		if (success == true) then
+		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..modFs.modPath..".modfs/"..file.filepath, 4)
+		else	
+			djui_popup_create("AME: Error exporting objects from level.", 1)
+		end
+
+    return true
+end
+
+hook_chat_command("ame-export", " [name] - Export the current area's objects to ModFS.", save_level_objs)
+
+function import_objs_from_modfs(key)
+  local filename = tostring(key..".txt")
+	local file = modFs:get_file(filename)
+
+  if not file then
+    djui_chat_message_create("AME: File "..key..".txt not found")
+    return true
+  end
+
+    local count = 0
+  for i = 0, NUM_OBJ_LISTS - 1 do
+        local o = obj_get_first(i)
+        repeat
+				  count = count + 1
+						if (o and not excludedExports[get_id_from_behavior(o.behavior)]) then
+              obj_mark_for_deletion(o)
+						end
+            o = obj_get_next(o)
+        until o == nil
+    end
+
+  file:rewind()
+	
+	while file:is_eof() ~= true do
+	  local line = file:read_line()
+
+    line = string.sub(line, 8, #line - 2)
+	  
+	  local objParam = {}
+	  
+	  for param in string.gmatch(line, "[^, ]+") do
+      djui_chat_message_create(param)
+			table.insert(objParam, param)
+	  end
+	
+		load_obj_from_line(objParam[1], tonumber(objParam[2]), tonumber(objParam[3]), tonumber(objParam[4]), degrees_to_sm64(tonumber(objParam[5])), degrees_to_sm64(tonumber(objParam[6])), degrees_to_sm64(tonumber(objParam[7])), objParam[8], objParam[9])
+		--load_coopstone(tostring(objParam[1]), tonumber(objParam[2]), objParam[3], tonumber(objParam[4]), tonumber(objParam[5]), tonumber(objParam[6]), tonumber(objParam[7]))
+		
+  end
+
+  return true
+end
+
+hook_chat_command("ame-import", "[name] - destroys every object in the current area then imports a set of objects from ModFS", import_objs_from_modfs)
+
 function ame_set_scale(msg)
   if not AME.grab.obj then return true end
 

@@ -95,51 +95,6 @@ end
 
 hook_keybind("M", toggle_mario)
 
---saves all objects in the current level to modFS in a format that can be pasted into a script.c [Shift + s]
-function save_level_objs(m)
-  local lvl =
-    level_is_vanilla_level(gNetworkPlayers[0].currLevelNum) == 0
-    and smlua_level_util_get_info(gNetworkPlayers[0].currLevelNum).fullname
-    or get_level_name(
-      gNetworkPlayers[0].currCourseNum,
-      gNetworkPlayers[0].currLevelNum,
-      gNetworkPlayers[0].currAreaIndex
-    )
-	local lvl_file = string.lower(lvl:gsub(" ", "_"))	
-
-  local filename = "level_"..lvl_file.."_area_"..gNetworkPlayers[0].currAreaIndex..".txt"
-
-  local file = modFs:get_file(filename) or modFs:create_file(filename, true)
-  file:set_text_mode(true) -- Set mode to text
-  file:rewind() -- Reset offset to the beginning of the file
-
-	local count = 0
-	local lines = {}
-	for i = 0, NUM_OBJ_LISTS - 1 do
-        local o = obj_get_first(i)
-        repeat
-				  count = count + 1
-						if (o and not excludedExports[get_id_from_behavior(o.behavior)]) then
-              local new = create_object_c_func(o)
-              table.insert(lines, new)
-						end
-            o = obj_get_next(o)
-        until o == nil
-    end
-		file:erase(file.size)
-		for i, obj in pairs(lines) do
-		  file:write_line(obj)
-		end
-		local success = modFs:save()
-		if (success == true) then
-		  djui_popup_create("AME: Exported objects from level to\nuser/sav/"..modFs.modPath..".modfs/"..file.filepath, 4)
-		else	
-			djui_popup_create("AME: Error exporting objects from level.", 1)
-		end
-end
-
-hook_keybind("S", save_level_objs)
-
 
 --[[
 [r]

@@ -287,3 +287,16 @@ function obj_build_set_model(model)
 end
 
 --hook_chat_command("ame-model", "- sets the built obj's model", obj_build_set_model)
+
+function load_obj_from_line(model, x, y, z, p, yaw, r, params, bhv)
+  modelID = get_id_from_model_name(model)
+  bhvID = search_id_from_behavior_name(bhv)
+
+  params = string.sub(params, 3)
+
+  spawn_sync_object(bhvID, modelID, x, y, z, function(o)
+    o.oFaceAnglePitch = p
+    o.oFaceAngleYaw = yaw
+    o.oFaceAngleRoll = r
+  end)
+end
