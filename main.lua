@@ -6,7 +6,7 @@ function toggle_editor()
   
   if AME.EDITOR == false then
     hud_show()
-    camera_unfreeze()
+    camera_unfreeze(true)
     set_override_fov(0)
   else
     hud_hide()
@@ -81,7 +81,7 @@ function find_behavior(name)
 
 end
 
-hook_chat_command("ame-find-behavior", "- tries to find a behavior anywhere in your active mods then adds it to ametools' model list so you can use it", find_behavior)
+--hook_chat_command("ame-find-behavior", "- tries to find a behavior anywhere in your active mods then adds it to ametools' model list so you can use it", find_behavior)
 
 --defines a custom behavior from the currently held object to ametools' behavior list so you can use it
 function define_bhv_to_amelist(name)

@@ -159,7 +159,7 @@ function objectGrabberLoop(o)
 		
 		object.oFlags = object.oFlags | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
     
-    if i ~= id_bhvSparkle and i ~= id_bhvSparkleParticleSpawner and i ~= id_bhvSparkleSpawn then
+    if i ~= id_bhvSparkle and i ~= id_bhvSparkleParticleSpawner and i ~= id_bhvSparkleSpawn and i ~= id_bhvSpawnIndicator then
       obj_mark_for_deletion(o)
       
       local model = obj_get_model_id_extended(object)
@@ -185,3 +185,40 @@ function objectGrabberLoop(o)
 end
 
 id_bhvObjectGrabber = hook_behavior(nil, OBJ_LIST_DEFAULT, true, objectGrabberInit, objectGrabberLoop)
+
+
+function spawn_indicator_init(o)
+  o.oFlags = OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
+end
+
+function spawn_indicator_loop(o)
+  if AME.EDITOR ~= true or (AME.EDITOR == true and AME.spawning == false) then
+	  obj_mark_for_deletion(o)
+	end
+	
+	o.oPosX = AME.camPos.x - coss(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
+  o.oPosY = AME.camPos.y - 500*sins(anglePitch)
+  o.oPosZ = AME.camPos.z - sins(-angleYaw - 0x4000)*(500*coss(anglePitch - 0x8000))
+	
+end
+
+id_bhvSpawnIndicator = hook_behavior(nil, OBJ_LIST_DEFAULT, true, spawn_indicator_init, spawn_indicator_loop)
+
+
+
+_camera_freeze = camera_freeze
+_camera_unfreeze = camera_unfreeze
+
+_G.camera_freeze = function(allow)
+  if AME.EDITOR == true and not allow then
+			return
+	end
+	_camera_freeze()
+end
+
+_G.camera_unfreeze = function(allow)
+  if AME.EDITOR == true and not allow then
+	  return
+	end
+	_camera_unfreeze()
+end
