@@ -13,6 +13,7 @@ maxVal = 8
 }
 
 squareW = 36
+local offset = 0
 
 function render()
   if AME.EDITOR == false then return end
@@ -33,6 +34,25 @@ function render()
   
   if (AME.grab.obj) then
     local scl = .25
+		
+		if m.controller.buttonDown & L_JPAD ~= 0 then
+		  offset = offset - 6
+		elseif m.controller.buttonDown & R_JPAD ~= 0 then
+		  offset = offset + 6
+		end
+		
+		local count = 0
+		
+		for name, value in pairs(AME.grab.obj) do
+				local posY = 8*count + offset
+				local val = AME.grab.obj[name]
+				
+				if posY > height/2 and posY < height then
+				  djui_hud_print_text(name.." : ", width - 110, posY, .2)
+					djui_hud_print_text(tostring(val), width - djui_hud_measure_text(tostring(val))*.2 - 10, posY, .2)
+				end
+			  count = count + 1
+		end
 		
 		local model = models[obj_get_model_id_extended(AME.grab.obj)] or "E_MODEL_CUSTOM_"..obj_get_model_id_extended(AME.grab.obj)
 	  if model == "E_MODEL_ERROR_MODEL" then
