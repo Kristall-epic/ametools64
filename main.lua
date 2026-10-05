@@ -141,6 +141,17 @@ end
 
 hook_chat_command("ame-obj-scale", "g", ame_set_scale)
 
+
+function set_obj_field(value)
+  local value = tonumber(value)
+  
+	if value and AME.grab.obj and AME.chosen and AME.grab.obj[AME.chosen] and not immutableObjFields[AME.chosen] then
+	  AME.grab.obj[AME.chosen] = value
+	end
+	return true
+end
+hook_chat_command("ame-set-field", "- sets a field from the grabbed object", set_obj_field)
+
 function keybinds(m, key)
   if (m.playerIndex ~= 0) then return end
   

@@ -45,6 +45,12 @@ AME = {
 		top = {
 		  vis = false,
 			pos = {x = 0, y = 0}
+		},
+		infobox = {
+		  vis = true,
+			offset = 0,
+			vel = 0,
+			maxVel = 10
 		}
 	},
   grab = {
@@ -73,8 +79,9 @@ AME = {
       [SPACE_TRANSFORM] = "",
       [TRANSFORM] = "Transform",
       [POSITION] = "6, 26, 2004",
-      [ANGLE] = "P:0x0, Y:0x0, R:0x0"
-    }
+      [ANGLE] = "P:0x0, Y:0x0, R:0x0",
+    },
+		chosen = ""
   }
 }
 
@@ -104,6 +111,22 @@ excludedExports = {
 	[id_bhvCoinFormation] = true,
 	[id_bhvMario] = true,
 	[id_bhvPiranhaPlantBubble] = true
+}
+
+--fuck fuck fuck ############### why no field_is_immutable(field)
+immutableObjFields = {
+  transform = true,
+	respawnInfoType = true,
+	oSyncID = true,
+	numSurfaces = true,
+	header = true,
+	behavior = true,
+	initBhvCommand = true,
+	curBhvCommand = true,
+	bhvStack = true,
+	bhvStackIndex = true,
+	coopFlags = true,
+	collidedObjs = true
 }
 
 behaviors = {}

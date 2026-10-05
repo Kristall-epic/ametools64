@@ -13,7 +13,6 @@ maxVal = 8
 }
 
 squareW = 36
-local offset = 0
 
 function render()
   if AME.EDITOR == false then return end
@@ -36,18 +35,33 @@ function render()
     local scl = .25
 		
 		if m.controller.buttonDown & L_JPAD ~= 0 then
-		  offset = offset - 6
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, AME.ui.infobox.maxVel, .05)
 		elseif m.controller.buttonDown & R_JPAD ~= 0 then
-		  offset = offset + 6
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, -AME.ui.infobox.maxVel, .05)
+		else
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, 0, .2)
 		end
+		
+		AME.ui.infobox.offset = AME.ui.infobox.offset + AME.ui.infobox.vel
 		
 		local count = 0
 		
+		djui_hud_set_color(0, 0, 0, 180)
+		djui_hud_render_rect(width - 120, height/2 - 10, 140, height/2 + 20)
+		djui_hud_set_color(25, 255, 25, 255)
+		djui_hud_render_rect(width - 115, height - height/4, 2, 2)
+		djui_hud_reset_color()
+		
 		for name, value in pairs(AME.grab.obj) do
-				local posY = 8*count + offset
+				local posY = 8*count + AME.ui.infobox.offset
 				local val = AME.grab.obj[name]
 				
-				if posY > height/2 and posY < height then
+				if posY > height/2 - 8 and posY < height - 2 then
+				  
+					if math.abs(posY - (height - height/4)) < 4 then
+					  AME.chosen = name
+					end
+				
 				  djui_hud_print_text(name.." : ", width - 110, posY, .2)
 					djui_hud_print_text(tostring(val), width - djui_hud_measure_text(tostring(val))*.2 - 10, posY, .2)
 				end
