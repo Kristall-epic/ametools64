@@ -5,7 +5,7 @@ AME.camVel = 50
 FLYCAM = true
 angleYaw = 0x0
 anglePitch = 0x0
-local l, camera_freeze, vec3f_set, vec3f_copy, camera_unfreeze, obj_mark_for_deletion, spawn_sync_object, djui_popup_create_global, tostring, spawn_non_sync_object, clamp, play_sound, hook_event, hook_on_sync_table_change = gLakituState, camera_freeze, vec3f_set, vec3f_copy, camera_unfreeze, obj_mark_for_deletion, spawn_sync_object, djui_popup_create_global, tostring, spawn_non_sync_object, clamp, play_sound, hook_event, hook_on_sync_table_change
+l = gLakituState
 
 local function spawning_controls(m)
     m.peakHeight = m.pos.y
@@ -14,7 +14,7 @@ local function spawning_controls(m)
 		DISTANCE = AME.grab.dist
 		local grabDist = AME.grab.dist
 		
-    camera_freeze()
+    camera_freeze(true)
     set_first_person_enabled(false)
     OBJECT_DISTANCE = coss(anglePitch)*DISTANCE
     stickYaw = m.intendedYaw - gLakituState.yaw
@@ -162,6 +162,12 @@ local function spawning_controls(m)
 		
     end
         if (AME.spawning == true) then
+				
+				local spawnIndicator = obj_count_objects_with_behavior_id(id_bhvSpawnIndicator)
+				
+				if spawnIndicator == 0 then
+				  spawn_non_sync_object(id_bhvSpawnIndicator, E_MODEL_EXCLAMATION_BOX_OUTLINE, 0, 0, 0, nil)
+				end
           
 					if m.controller.buttonPressed & R_TRIG ~= 0 then
 					  AME.spawnMode = 1 - AME.spawnMode

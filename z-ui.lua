@@ -34,6 +34,40 @@ function render()
   if (AME.grab.obj) then
     local scl = .25
 		
+		if m.controller.buttonDown & L_JPAD ~= 0 then
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, AME.ui.infobox.maxVel, .05)
+		elseif m.controller.buttonDown & R_JPAD ~= 0 then
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, -AME.ui.infobox.maxVel, .05)
+		else
+		  AME.ui.infobox.vel = lerp(AME.ui.infobox.vel, 0, .2)
+		end
+		
+		AME.ui.infobox.offset = AME.ui.infobox.offset + AME.ui.infobox.vel
+		
+		local count = 0
+		
+		djui_hud_set_color(0, 0, 0, 180)
+		djui_hud_render_rect(width - 120, height/2 - 10, 140, height/2 + 20)
+		djui_hud_set_color(25, 255, 25, 255)
+		djui_hud_render_rect(width - 115, height - height/4, 2, 2)
+		djui_hud_reset_color()
+		
+		for name, value in pairs(AME.grab.obj) do
+				local posY = 8*count + AME.ui.infobox.offset
+				local val = AME.grab.obj[name]
+				
+				if posY > height/2 - 8 and posY < height - 2 then
+				  
+					if math.abs(posY - (height - height/4)) < 4 then
+					  AME.chosen = name
+					end
+				
+				  djui_hud_print_text(name.." : ", width - 110, posY, .2)
+					djui_hud_print_text(tostring(val), width - djui_hud_measure_text(tostring(val))*.2 - 10, posY, .2)
+				end
+			  count = count + 1
+		end
+		
 		local model = models[obj_get_model_id_extended(AME.grab.obj)] or "E_MODEL_CUSTOM_"..obj_get_model_id_extended(AME.grab.obj)
 	  if model == "E_MODEL_ERROR_MODEL" then
       model = models[AME.grab.obj.oUnk94]

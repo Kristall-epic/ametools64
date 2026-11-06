@@ -6,7 +6,7 @@ function toggle_editor()
   
   if AME.EDITOR == false then
     hud_show()
-    camera_unfreeze()
+    camera_unfreeze(true)
     set_override_fov(0)
   else
     hud_hide()
@@ -81,7 +81,7 @@ function find_behavior(name)
 
 end
 
-hook_chat_command("ame-find-behavior", "- tries to find a behavior anywhere in your active mods then adds it to ametools' model list so you can use it", find_behavior)
+--hook_chat_command("ame-find-behavior", "- tries to find a behavior anywhere in your active mods then adds it to ametools' model list so you can use it", find_behavior)
 
 --defines a custom behavior from the currently held object to ametools' behavior list so you can use it
 function define_bhv_to_amelist(name)
@@ -234,6 +234,17 @@ function ame_set_scale(msg)
 end
 
 hook_chat_command("ame-obj-scale", "g", ame_set_scale)
+
+
+function set_obj_field(value)
+  local value = tonumber(value)
+  
+	if value and AME.grab.obj and AME.chosen and AME.grab.obj[AME.chosen] and not immutableObjFields[AME.chosen] then
+	  AME.grab.obj[AME.chosen] = value
+	end
+	return true
+end
+hook_chat_command("ame-set-field", "- sets a field from the grabbed object", set_obj_field)
 
 function keybinds(m, key)
   if (m.playerIndex ~= 0) then return end

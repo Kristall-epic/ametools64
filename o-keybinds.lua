@@ -58,11 +58,19 @@ if not AME.grab.obj then return end
 	  end
 	
 	spawn_sync_object(get_id_from_behavior(o.bhv), model, o.pos.x, o.pos.y, o.pos.z, function(obj) 
-	  obj.oBehParams  = o.obj.oBehParams
-		obj.oFaceAnglePitch = o.obj.oFaceAnglePitch
-		obj.oFaceAngleYaw = o.obj.oFaceAngleYaw
-		obj.oFaceAngleRoll = o.obj.oFaceAngleRoll
-		obj.oUnk94 = o.obj.oUnk94 ~= 0 and o.obj.oUnk94 or o.model
+	
+		for name, value in pairs(AME.grab.obj) do
+		  local val = AME.grab.obj[name]
+			local grabbedScale = AME.grab.obj.header.gfx.scale
+			
+			obj_set_gfx_scale(obj, grabbedScale.x, grabbedScale.y, grabbedScale.z)
+			
+			if obj[name] and not immutableObjFields[name] then
+			  obj[name] = val
+			end
+			
+		end
+		
 	end)
 
 end
